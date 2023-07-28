@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import com.landfathich.retrofitapp.databinding.ActivityMainBinding
+import com.landfathich.retrofitapp.retrofit.AuthRequest
 import com.landfathich.retrofitapp.retrofit.MainApi
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,11 +17,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val textView = findViewById<TextView>(R.id.firstName)
-        val button = findViewById<Button>(R.id.btn)
+        binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -34,11 +38,20 @@ class MainActivity : AppCompatActivity() {
             .build()
         val mainApi = retrofit.create(MainApi::class.java)
 
-        button.setOnClickListener {
+        binding.btn.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val product = mainApi.getProductById(3)
+                val user = mainApi.auth(
+                    AuthRequest(
+                        binding.username.text.toString(),
+                        binding.password.text.toString()
+                    )
+                )
                 runOnUiThread {
-                    textView.text = product.title
+                    binding.firstName.text = user.firstName
+                    binding.secondName.text = user.lastName
+                    Picasso.get()
+                        .load(user.image)
+                        .into(binding.iv)
                 }
             }
         }
