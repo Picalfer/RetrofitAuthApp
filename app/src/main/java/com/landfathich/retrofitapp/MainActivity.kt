@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import com.landfathich.retrofitapp.retrofit.ProductApi
+import com.landfathich.retrofitapp.retrofit.MainApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val textView = findViewById<TextView>(R.id.tv)
+        val textView = findViewById<TextView>(R.id.firstName)
         val button = findViewById<Button>(R.id.btn)
 
         val interceptor = HttpLoggingInterceptor()
@@ -32,11 +32,11 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create()) // подключаем конвертер, который будет превращать gson формат в data класс
             .client(client)
             .build()
-        val productApi = retrofit.create(ProductApi::class.java)
+        val mainApi = retrofit.create(MainApi::class.java)
 
         button.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val product = productApi.getProductById(3)
+                val product = mainApi.getProductById(3)
                 runOnUiThread {
                     textView.text = product.title
                 }
