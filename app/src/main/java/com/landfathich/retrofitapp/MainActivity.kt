@@ -3,7 +3,10 @@ package com.landfathich.retrofitapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.landfathich.retrofitapp.adapter.ProductAdapter
 import com.landfathich.retrofitapp.databinding.ActivityMainBinding
 import com.landfathich.retrofitapp.retrofit.AuthRequest
 import com.landfathich.retrofitapp.retrofit.MainApi
@@ -19,10 +22,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+    private lateinit var adapter: ProductAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
+
+        adapter = ProductAdapter()
+        binding.rv.layoutManager = LinearLayoutManager(this)
+        binding.rv.adapter = adapter
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -38,20 +46,11 @@ class MainActivity : AppCompatActivity() {
             .build()
         val mainApi = retrofit.create(MainApi::class.java)
 
-        binding.btn.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                val user = mainApi.auth(
-                    AuthRequest(
-                        binding.username.text.toString(),
-                        binding.password.text.toString()
-                    )
-                )
-                runOnUiThread {
-                    binding.firstName.text = user.firstName
-                    binding.secondName.text = user.lastName
-                    Picasso.get()
-                        .load(user.image)
-                        .into(binding.iv)
+        CoroutineScope(Dispatchers.IO).launch {
+
+            runOnUiThread {
+                binding.apply {
+
                 }
             }
         }

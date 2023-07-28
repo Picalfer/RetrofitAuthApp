@@ -22,6 +22,14 @@ class ProductAdapter : ListAdapter<Product, ProductAdapter.Holder>(Comparator())
                 .into(preview)
         }
     }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
+        return Holder(view)
+    }
+
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        holder.bind(getItem(position))
+    }
 
     class Comparator : DiffUtil.ItemCallback<Product>() {
         override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
@@ -33,12 +41,4 @@ class ProductAdapter : ListAdapter<Product, ProductAdapter.Holder>(Comparator())
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
-        return Holder(view)
-    }
-
-    override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(getItem(position))
-    }
 }
