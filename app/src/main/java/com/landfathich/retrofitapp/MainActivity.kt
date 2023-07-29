@@ -2,15 +2,10 @@ package com.landfathich.retrofitapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.landfathich.retrofitapp.adapter.ProductAdapter
 import com.landfathich.retrofitapp.databinding.ActivityMainBinding
-import com.landfathich.retrofitapp.retrofit.AuthRequest
 import com.landfathich.retrofitapp.retrofit.MainApi
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,10 +42,10 @@ class MainActivity : AppCompatActivity() {
         val mainApi = retrofit.create(MainApi::class.java)
 
         CoroutineScope(Dispatchers.IO).launch {
-
+            val products = mainApi.getAllProducts()
             runOnUiThread {
                 binding.apply {
-
+                    adapter.submitList(products.products)
                 }
             }
         }
