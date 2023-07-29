@@ -47,12 +47,13 @@ class MainActivity : AppCompatActivity() {
 
         var user: User? = null
         CoroutineScope(Dispatchers.IO).launch {
-            user = mainApi.auth(
+            val response = mainApi.auth(
                 AuthRequest(
                     "kminchelle",
                     "0lelplR"
                 )
             )
+            //user = response.message()
             runOnUiThread {
                 Toast.makeText(this@MainActivity, "Sign in", Toast.LENGTH_SHORT).show()
             }

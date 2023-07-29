@@ -1,5 +1,6 @@
 package com.landfathich.retrofitapp.retrofit
 
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -13,7 +14,7 @@ interface MainApi {
     suspend fun getProductById(@Path("id") id: Int): Product
 
     @POST("auth/login")
-    suspend fun auth(@Body authRequest: AuthRequest): User
+    suspend fun auth(@Body authRequest: AuthRequest): Response<User>
 
     @GET("auth/products")
     suspend fun getAllProducts(): Products
