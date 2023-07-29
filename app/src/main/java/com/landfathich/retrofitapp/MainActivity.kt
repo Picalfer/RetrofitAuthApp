@@ -3,10 +3,13 @@ package com.landfathich.retrofitapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SearchView.OnQueryTextListener
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.landfathich.retrofitapp.adapter.ProductAdapter
 import com.landfathich.retrofitapp.databinding.ActivityMainBinding
+import com.landfathich.retrofitapp.retrofit.AuthRequest
 import com.landfathich.retrofitapp.retrofit.MainApi
+import com.landfathich.retrofitapp.retrofit.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,6 +45,19 @@ class MainActivity : AppCompatActivity() {
             .build()
         val mainApi = retrofit.create(MainApi::class.java)
 
+        var user: User? = null
+        CoroutineScope(Dispatchers.IO).launch {
+            user = mainApi.auth(
+                AuthRequest(
+                    "kminchelle",
+                    "0lelplR"
+                )
+            )
+            runOnUiThread {
+                Toast.makeText(this@MainActivity, "Sign in", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         binding.sv.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextSubmit(text: String?): Boolean { // срабатывает когда человек жмет на кнопку поиска на клавиатуре
                 return true
@@ -49,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(text: String?): Boolean { // срабатывает каждый раз когда есть изменения в тексте searchView
                 CoroutineScope(Dispatchers.IO).launch {
-                    val products = text?.let { mainApi.getProductsByName(it) }
+                    val products = text?.let { mainApi.getProductsByNameAuth(user?.token ?: "", it) }
                     runOnUiThread {
                         binding.apply {
                             adapter.submitList(products?.products)
