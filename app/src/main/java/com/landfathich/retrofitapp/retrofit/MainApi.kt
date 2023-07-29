@@ -16,8 +16,9 @@ interface MainApi {
     @POST("auth/login")
     suspend fun auth(@Body authRequest: AuthRequest): Response<User>
 
+    @Headers("Content-Type: application/gson")
     @GET("auth/products")
-    suspend fun getAllProducts(): Products
+    suspend fun getAllProductsAuth(@Header("Authorization") token: String): Products
 
     @Headers("Content-Type: application/gson")
     @GET("auth/products/search")

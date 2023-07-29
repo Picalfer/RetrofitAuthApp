@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.landfathich.retrofitapp.databinding.FragmentLoginBinding
 import com.landfathich.retrofitapp.retrofit.AuthRequest
 import com.landfathich.retrofitapp.retrofit.MainApi
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,14 +41,13 @@ class LoginFragment : Fragment() {
         binding.apply {
             btnNext.setOnClickListener {
                 findNavController().navigate(R.id.action_loginFragment_to_productsFragment)
-
             }
 
             btnSignIn.setOnClickListener {
                 auth(
                     AuthRequest(
-                        login.text.toString(),
-                        password.text.toString()
+                        login.text.toString(), // for test: kminchelle
+                        password.text.toString() // for test: 0lelplR
                     )
                 )
             }
@@ -77,7 +78,17 @@ class LoginFragment : Fragment() {
                     JSONObject(it).getString("message")
                 }
             requireActivity().runOnUiThread {
-                binding.errorText.text = message
+                if (message != null) Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                val user = response.body()
+                if (user != null) {
+                    Picasso.get()
+                        .load(user.image)
+                        .into(binding.avatar)
+                    binding.name.text = user.firstName
+                    binding.btnNext.visibility = View.VISIBLE
+
+                    viewModel.token.value = user.token
+                }
             }
         }
     }

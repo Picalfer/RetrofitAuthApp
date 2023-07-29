@@ -1,9 +1,9 @@
 package com.landfathich.retrofitapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SearchView.OnQueryTextListener
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.landfathich.retrofitapp.adapter.ProductAdapter
 import com.landfathich.retrofitapp.databinding.ActivityMainBinding
@@ -66,7 +66,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(text: String?): Boolean { // срабатывает каждый раз когда есть изменения в тексте searchView
                 CoroutineScope(Dispatchers.IO).launch {
-                    val products = text?.let { mainApi.getProductsByNameAuth(user?.token ?: "", it) }
+                    val products =
+                        text?.let { mainApi.getProductsByNameAuth(user?.token ?: "", it) }
                     runOnUiThread {
                         binding.apply {
                             adapter.submitList(products?.products)
